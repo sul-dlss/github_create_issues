@@ -13,7 +13,7 @@ class GithubCreateIssues
   def self.add_label(token, repo, name)
     exists = true
 
-    client = Octokit::Client.new(:access_token => token)
+    client = Octokit::Client.new access_token: token
     begin
       client.label(repo, name)
     rescue Octokit::NotFound
@@ -33,10 +33,10 @@ class GithubCreateIssues
   # [label] String.  Name of the label connected to these issues.
   # [titles] Array of strings.  The titles of each issue we want to exist.
   # [desc] String.  Description to enter in the issue text.
-  def self.add_github_issues(token, repo, label, titles, desc)
+  def self.add_github_issues(token, repo, label, titles, desc, asignee='')
     add_label(token, repo, label)
 
-    client = Octokit::Client.new(:access_token => token)
+    client = Octokit::Client.new access_token: token
     client.auto_paginate = true
     issues = client.issues repo, state: 'open', labels: label
 
@@ -54,7 +54,7 @@ class GithubCreateIssues
 
     # For those servers without issues already open, create an issue for each.
     titles.each do |t|
-      client.create_issue repo, t, desc, labels: label
+      client.create_issue repo, t, desc, labels: label, assignee: asignee
     end
   end
 end

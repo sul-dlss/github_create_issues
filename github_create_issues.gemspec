@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'octokit', '>= 4.6'
 
   s.name        = 'github_create_issues'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = '2017-02-15'
   s.summary     = 'Create and maintain github issues'
   s.description = 'This takes lists of issues to create in a github repository, each marked with a specific label, and creates them.  If any issues already exist, a new comment will be created instead.  It is meant to offer a way for scripts to notify a repo of normal actionable items when using a repo as work tracking.'
