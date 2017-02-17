@@ -24,6 +24,27 @@ class GithubCreateIssues
     client.add_label(repo, name)
   end
 
+  # Close an open issue of a given title and label.  Use a combination of both
+  # in order to limit how much we touch by accident.  This is important since
+  # we'll close all matching issues.
+  #
+  # [token] String.  OAuth token.
+  # [repo] String.  Name of the resposity.
+  # [label] String.  Name of the label needed for the issue.
+  # [title] String.  Issue title to close.
+  # [comment] String.  If non-empty, add as a comment before closing the issue.
+  def self.close(token, repo, label, title, comment='')
+    client = Octokit::Client.new access_token: token
+    client.auto_paginate = true
+    issues = client.issues repo, state: 'open', labels: label
+
+    issues.each do |i|
+      next unless title == i.title
+      client.add_comment repo, i.number, comment if comment != ''
+      client.close_issue repo, i.number
+    end
+  end
+
   # Add issues to a github repo.  We take a label that is set for any issues
   # we create, a list of servers, and an error message to add to the issue.  If
   # there is already an open issue for any server, just add a comment to ping.
